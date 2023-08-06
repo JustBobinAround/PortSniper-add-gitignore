@@ -1,5 +1,7 @@
 import scapy
 import argparse
+import threading
+from queue import Queue
 
 def getArgs():
     parser = argparse.ArgumentParser(
@@ -16,4 +18,11 @@ def getArgs():
 
 
 args = getArgs()
-print(args.ip, args.port)
+
+
+def QueuePorts():
+    split_args = args.port.split('-')
+    portQueue = Queue()
+    for port in range(int(split_args[0]), int(split_args[1]) + 1):
+        queue.enqueue(port)
+    return portQueue
