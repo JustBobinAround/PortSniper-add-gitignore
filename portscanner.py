@@ -1,4 +1,4 @@
-import scapy
+from scapy.all import *
 import argparse
 import threading
 from queue_structure import Queue
@@ -35,6 +35,11 @@ def QueuePorts():
         portQueue.enqueue(port)
     return portQueue
 
+def synScan(ip, port):
+    syn_packet = IP(dst=ip)/TCP(dport=port, flags='S')
+    response = sr1(syn_packet)
+    print(response)
+
 def main():
     portQueue = QueuePorts()
     portQueue.display()
@@ -45,4 +50,4 @@ def main():
 # Threading
 # Different scans with scapey
 
-main()
+synScan('89.249.219.52', 22)
