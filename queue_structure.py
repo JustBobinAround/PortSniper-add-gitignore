@@ -35,5 +35,7 @@ class Queue:
             self.size += 1
     
     def dequeue(self):
+        port = self.head.data
         self.head = self.head.next
         self.size += 1
+        return port

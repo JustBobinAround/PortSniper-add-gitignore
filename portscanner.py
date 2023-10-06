@@ -6,7 +6,7 @@ from queue_structure import Queue
 def getArgs():
     parser = argparse.ArgumentParser(
         prog="Port Sniper",
-        description="A simple and efficient port-scanner"
+        description="A simple and efficient TCP port-scanner"
         )
 
     parser.add_argument('-i','--ip', 
@@ -37,17 +37,35 @@ def QueuePorts():
 
 def synScan(ip, port):
     syn_packet = IP(dst=ip)/TCP(dport=port, flags='S')
-    response = sr1(syn_packet)
-    print(response)
+    rest_packet = IP(dst=ip)/TCP(dport=port, flags='R')
+    response = sr1(syn_packet, verbose=0, timeout=5).sprintf("%TCP.flags%")
+    if response == 'SA':
+        print(f"Port {port} on {ip} is open")
+        send_rest = sr1(rest_packet, verbose=0,timeout=1)
+        
+    elif response== 'RA':
+        print(f"Port {port} on {ip} is closed")
+        
 
 def main():
+    args = getArgs()
     portQueue = QueuePorts()
-    portQueue.display()
+    while not portQueue.isEmpty():
+        port = portQueue.dequeue()
+        synScan(args.ip, port)
 
+# main()
+
+synScan("192.168.1.1", 1)
 
 # TO-DO
 # Figure out how to run different scan functions depending on scan flag argument we will make (if statements? lame)
 # Threading
 # Different scans with scapey
 
-synScan('89.249.219.52', 22)
+# Bugs
+# 192.168.1.1 works but 192.168.1.12 gives an error? wtf?
+
+# https://thepacketgeek.com/scapy/building-network-tools/part-10/#sweep-and-scan
+
+# synScan('192.168.1.1', 443)
