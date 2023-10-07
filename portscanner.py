@@ -29,11 +29,17 @@ def getArgs():
 
 def QueuePorts():
     args = getArgs()
-    split_args = args.port.split('-')
     portQueue = Queue()
-    for port in range(int(split_args[0]), int(split_args[1]) + 1):
-        portQueue.enqueue(port)
+    if '-' in args.port:
+        split_args = args.port.split('-')
+        for port in range(int(split_args[0]), int(split_args[1]) + 1):
+            portQueue.enqueue(port)
+    else:
+        split_args = args.port.split()
+        for port in range(len(split_args)):
+            portQueue.enqueue(int(split_args[port]))
     return portQueue
+
 
 def ping(ip):
     ping_packet = IP(dst=ip)/ICMP()
@@ -62,7 +68,7 @@ def main():
         return print(f"It seems like host {args.ip} is down, try again later?")
     while not portQueue.isEmpty():
         port = portQueue.dequeue()
-        scanResults = synScan(args.ip, port)
+        synScan(args.ip, port)
         
 
 
