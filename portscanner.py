@@ -2,6 +2,7 @@ from scapy.all import *
 import argparse
 import threading
 from queue_structure import Queue
+from scanner import Scanner
 
 def getArgs():
     parser = argparse.ArgumentParser(
