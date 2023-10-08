@@ -9,6 +9,15 @@ def getArgs():
         description="A simple and efficient TCP port-scanner"
         )
 
+    
+    parser.add_argument('-s', '--scan', 
+    type=str, 
+    help="specify a scan type, default is SYN scan", 
+    choices=["syn", "TCPconnect"],
+    default="syn",
+    dest="scan")
+
+
     parser.add_argument('-i','--ip', 
                         type=str, 
                         help='The machine IP to scan', 
@@ -20,11 +29,16 @@ def getArgs():
                         help='Port range to scan seperated by a dash, ex: 80 or 1-100', 
                         dest='port', 
                         required=True)
+    
+    
 
+    
     args = parser.parse_args()
 
     return args
 
+def fuckniggas():
+    print("Fuck a dolla and a dream")
 
 
 def QueuePorts():
