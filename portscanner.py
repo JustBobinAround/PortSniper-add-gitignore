@@ -37,9 +37,6 @@ def getArgs():
 
     return args
 
-def fuckniggas():
-    print("Fuck a dolla and a dream")
-
 
 def QueuePorts():
     args = getArgs()
