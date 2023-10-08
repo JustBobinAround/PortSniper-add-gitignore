@@ -18,7 +18,7 @@ class Scanner:
         return self.ping_response
     
     def syn(self):
-    self.syn_packet = IP(dst=self.ip)/TCP(dport=self.port, flags='S')
-    self.rest_packet = IP(dst=self.ip)/TCP(dport=self.port, flags='R')
-    self.response = sr1(self.syn_packet, verbose=0, timeout=1)
-    return self.response
+        self.syn_packet = IP(dst=self.ip)/TCP(dport=self.port, flags='S')
+        self.rest_packet = IP(dst=self.ip)/TCP(dport=self.port, flags='R')
+        self.response = sr1(self.syn_packet, verbose=0, timeout=1)
+        return self.response
