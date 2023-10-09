@@ -1,8 +1,19 @@
+from rich import print as rprint
+from rich.table import Table
+from rich.markdown import Markdown
+
+import os
 from scapy.all import *
 import argparse
 import threading
 from queue_structure import Queue
 from scanner import Scanner
+
+def clear():
+    if os.name == 'nt':
+        os.system('cls')
+    else:
+        os.system('clear')
 
 def getArgs():
     parser = argparse.ArgumentParser(
@@ -14,7 +25,7 @@ def getArgs():
     parser.add_argument('-s', '--scan', 
     type=str, 
     help="specify a scan type, default is SYN scan", 
-    choices=["syn", "TCPconnect"],
+    choices=["syn", "connect"],
     default="syn",
     dest="scan")
 
@@ -59,20 +70,43 @@ def synScan(ip, port):
     ping = scanner.ping()
 
     if not ping:
-        print(f"Host {ip} seems to be down, try again later!")
+        rprint(f"[bold red]Host {ip} seems to be down, try again later![/bold red]")
         exit()
+    
+    
     
     response = scanner.syn()
     
-    responeFlag = response.sprintf("%TCP.flags%")
-    if responeFlag == 'SA':
-        print(f"Port {port} on {ip} is open")
+    responeFlag = response.sprintf("%TCP.sport% %TCP.flags%")
+    responeFlag = responeFlag.split(" ")
+    if responeFlag[1] == 'SA':
+        rprint(f"port {port} is open!")
         
-    elif responeFlag== 'RA':
-        print(f"Port {port} on {ip} is closed")
-        
+    elif responeFlag[1] == 'RA':
+        rprint(f"port {port} is closed!")
+    
+
+
+
+    
+    
+
+
+    
+def Display():
+    clear()
+    rprint("""
+ __   __   __  ___     __          __   ___  __  
+|__) /  \ |__)  |     /__` |\ | | |__) |__  |__) 
+|    \__/ |  \  |     .__/ | \| | |    |___ |  \ 
+                                                 
+[bold red]Author:[/bold red] Ameer Moustafa
+[bold red]Github:[/bold red] https://github.com/Ameer-Moustafa/PortSniper                                                 
+\n""")
+
 
 def main():
+    Display()
     args = getArgs()
     portQueue = QueuePorts()
     while not portQueue.isEmpty():
@@ -88,6 +122,7 @@ main()
 # TO-DO
 # Threading
 # Different scans with scapey
+# Figure out how to display everything
 
 # Bugs
 # Implement ping scan to not run syn scan in-case host is down (done?)
