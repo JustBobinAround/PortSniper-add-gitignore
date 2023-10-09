@@ -21,4 +21,10 @@ class Scanner:
         self.syn_packet = IP(dst=self.ip)/TCP(dport=self.port, flags='S')
         self.rest_packet = IP(dst=self.ip)/TCP(dport=self.port, flags='R')
         self.response = sr1(self.syn_packet, verbose=0, timeout=1)
+
+        self.responeFlag = self.response.sprintf("%TCP.flags%")
+
+        if self.responeFlag == 'SA':
+            sr1(self.rest_packet, verbose=0,timeout=1)
+
         return self.response

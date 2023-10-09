@@ -53,21 +53,20 @@ def QueuePorts():
     return portQueue
 
 
-def ping(ip):
-    ping_packet = IP(dst=ip)/ICMP()
-    ping_response = sr1(ping_packet, timeout=1, verbose=0)
-    return ping_response
 
 def synScan(ip, port):
-    syn_packet = IP(dst=ip)/TCP(dport=port, flags='S')
-    rest_packet = IP(dst=ip)/TCP(dport=port, flags='R')
-    response = sr1(syn_packet, verbose=0, timeout=1)
+    scanner = Scanner(ip, port)
+    ping = scanner.ping()
+
+    if not ping:
+        print(f"Host {ip} seems to be down, try again later!")
+        exit()
     
+    response = scanner.syn()
     
     responeFlag = response.sprintf("%TCP.flags%")
     if responeFlag == 'SA':
         print(f"Port {port} on {ip} is open")
-        send_rest = sr1(rest_packet, verbose=0,timeout=1)
         
     elif responeFlag== 'RA':
         print(f"Port {port} on {ip} is closed")
@@ -76,8 +75,6 @@ def synScan(ip, port):
 def main():
     args = getArgs()
     portQueue = QueuePorts()
-    if not ping(args.ip):
-        return print(f"It seems like host {args.ip} is down, try again later?")
     while not portQueue.isEmpty():
         port = portQueue.dequeue()
         synScan(args.ip, port)
@@ -89,12 +86,11 @@ main()
 # synScan("192.168.1.12", 1)
 
 # TO-DO
-# Figure out how to run different scan functions depending on scan flag argument we will make (if statements? lame)
 # Threading
 # Different scans with scapey
 
 # Bugs
-# Implement ping scan to not run syn scan in-case host is down
+# Implement ping scan to not run syn scan in-case host is down (done?)
 
 # https://thepacketgeek.com/scapy/building-network-tools/part-10/#sweep-and-scan
 
