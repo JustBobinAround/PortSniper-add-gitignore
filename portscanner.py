@@ -65,25 +65,36 @@ def QueuePorts():
 
 
 
-def synScan(ip, port):
-    scanner = Scanner(ip, port)
-    ping = scanner.ping()
+def synScan():
+    args = getArgs()
+    portQueue = QueuePorts()
+    table = Table(title="SYN scan results:")
+    table.add_column("Port")
+    table.add_column("Status")
+    table.add_column("Service")
+    closedPorts = 0
+    while not portQueue.isEmpty():
+        port = portQueue.dequeue()
+        scanner = Scanner(args.ip, port)
+        ping = scanner.ping()
 
-    if not ping:
-        rprint(f"[bold red]Host {ip} seems to be down, try again later![/bold red]")
-        exit()
+        if not ping:
+            rprint(f"[bold red]Host {ip} seems to be down, try again later![/bold red]")
+            exit()
     
     
     
-    response = scanner.syn()
+        response = scanner.syn()
     
-    responeFlag = response.sprintf("%TCP.sport% %TCP.flags%")
-    responeFlag = responeFlag.split(" ")
-    if responeFlag[1] == 'SA':
-        rprint(f"port {port} is open!")
-        
-    elif responeFlag[1] == 'RA':
-        rprint(f"port {port} is closed!")
+        responeFlag = response.sprintf("%TCP.sport% %TCP.flags%")
+        responeFlag = responeFlag.split(" ")
+        if responeFlag[1] == 'SA':
+            table.add_row(f"{port}/TCP", "open", f"{responeFlag[0]}")
+            
+        elif responeFlag[1] == 'RA':
+            closedPorts += 1
+    rprint(f"Closed Ports: {closedPorts}\n")
+    rprint(table)
     
 
 
@@ -107,11 +118,8 @@ def Display():
 
 def main():
     Display()
-    args = getArgs()
-    portQueue = QueuePorts()
-    while not portQueue.isEmpty():
-        port = portQueue.dequeue()
-        synScan(args.ip, port)
+    synScan()
+
         
 
 
