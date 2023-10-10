@@ -65,10 +65,9 @@ def QueuePorts():
 
 
 
-def synScan():
-    args = getArgs()
+def synScan(args):
     portQueue = QueuePorts()
-    table = Table(title="SYN scan results:")
+    table = Table(title=f"SYN scan results:")
     table.add_column("Port")
     table.add_column("Status")
     table.add_column("Service")
@@ -104,7 +103,7 @@ def synScan():
 
 
     
-def Display():
+def Display(args):
     clear()
     rprint("""
  __   __   __  ___     __          __   ___  __  
@@ -117,8 +116,9 @@ def Display():
 
 
 def main():
-    Display()
-    synScan()
+    args = getArgs()
+    Display(args)
+    synScan(args)
 
         
 
@@ -128,9 +128,9 @@ main()
 # synScan("192.168.1.12", 1)
 
 # TO-DO
-# Threading
+# Target overview in display(), IP, ports to scan, mac address?, etc
 # Different scans with scapey
-# Figure out how to display everything
+# Figure out how to display everything (done?)
 
 # Bugs
 # Implement ping scan to not run syn scan in-case host is down (done?)
