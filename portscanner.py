@@ -82,11 +82,13 @@ def synScan(args):
             exit()
     
     
-    
-        response = scanner.syn()
-    
-        responeFlag = response.sprintf("%TCP.sport% %TCP.flags%")
-        responeFlag = responeFlag.split(" ")
+        try:
+            response = scanner.syn()
+        
+            responeFlag = response.sprintf("%TCP.sport% %TCP.flags%")
+            responeFlag = responeFlag.split(" ")
+        except:
+            return rprint("[red bold] An error has occured, exiting...[/red bold]")
         if responeFlag[1] == 'SA':
             table.add_row(f"{port}/TCP", "open", f"{responeFlag[0]}")
             
@@ -113,6 +115,11 @@ def Display(args):
 [bold red]Author:[/bold red] Ameer Moustafa
 [bold red]Github:[/bold red] https://github.com/Ameer-Moustafa/PortSniper                                                 
 \n""")
+
+    rprint(f"""
+    [bold red]Target Info:[/bold red]\n
+    [bold]IP:[/bold] {args.ip}
+    [bold]Ports:[/bold] {args.port}\n""")
 
 
 def main():
