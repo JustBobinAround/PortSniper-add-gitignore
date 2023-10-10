@@ -6,7 +6,7 @@ __pycache__/
 $py.class
 
 # your venv was named this
-portscanner
+portscanner/
 
 # C extensions
 *.so
