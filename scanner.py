@@ -1,4 +1,5 @@
 from scapy.all import *
+from rich import print as rprint
 
 class Scanner:
     def __init__(self, ip, port):
@@ -14,8 +15,12 @@ class Scanner:
    
     def ping(self):
         self.ping_packet = IP(dst=self.ip)/ICMP()
-        self.ping_response = sr1(self.ping_packet, timeout=1, verbose=0)
-        return self.ping_response
+        try:
+            self.ping_response = sr1(self.ping_packet, timeout=1, verbose=0)
+            return self.ping_response
+        except:
+            rprint("[bold red]Error: Scan requires sudo, exiting....")
+            exit()
     
     def syn(self):
         self.syn_packet = IP(dst=self.ip)/TCP(dport=self.port, flags='S')

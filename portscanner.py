@@ -132,16 +132,17 @@ def main():
 
 main()
 
-# synScan("192.168.1.12", 1)
 
 # TO-DO
-# Target overview in display(), IP, ports to scan, mac address?, etc
+# Target overview in display(), IP, ports to scan, mac address?, etc (in progress)
 # Different scans with scapey
-# Figure out how to display everything (done?)
 
-# Bugs
-# Implement ping scan to not run syn scan in-case host is down (done?)
+# Read https://nmap.org/book/toc.html - Host Discovery, Port scanning overview
+
+# Delay argument for port scans, can add a flag like nmap with default value
 
 # https://thepacketgeek.com/scapy/building-network-tools/part-10/#sweep-and-scan
 
-# synScan('192.168.1.1', 443)
+# Future features
+# Ability to read hosts/ports from files
+# Ability to write results to files
