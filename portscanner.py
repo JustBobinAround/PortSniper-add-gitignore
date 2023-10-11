@@ -8,6 +8,7 @@ import argparse
 import threading
 from queue_structure import Queue
 from scanner import Scanner
+from noroot_ping import ping_tcp
 
 def clear():
     if os.name == 'nt':
@@ -74,26 +75,31 @@ def synScan(args):
     closedPorts = 0
     while not portQueue.isEmpty():
         port = portQueue.dequeue()
-        scanner = Scanner(args.ip, port)
-        ping = scanner.ping()
+        if os.name == 'nt':
+            scanner = Scanner(args.ip, port)
+            ping = scanner.ping()
 
-        if not ping:
-            rprint(f"[bold red]Host {args.ip} seems to be down, try again later![/bold red]")
-            exit()
-    
-    
-        try:
-            response = scanner.syn()
+            if not ping:
+                rprint(f"[bold red]Host {args.ip} seems to be down, try again later![/bold red]")
+                exit()
         
-            responeFlag = response.sprintf("%TCP.sport% %TCP.flags%")
-            responeFlag = responeFlag.split(" ")
-        except:
-            return rprint("[red bold] An error has occured, exiting...[/red bold]")
-        if responeFlag[1] == 'SA':
-            table.add_row(f"{port}/TCP", "open", f"{responeFlag[0]}")
+        
+            try:
+                response = scanner.syn()
             
-        elif responeFlag[1] == 'RA':
-            closedPorts += 1
+                responeFlag = response.sprintf("%TCP.sport% %TCP.flags%")
+                responeFlag = responeFlag.split(" ")
+            except:
+                return rprint("[red bold] An error has occured, exiting...[/red bold]")
+            if responeFlag[1] == 'SA':
+                table.add_row(f"{port}/TCP", "open", f"{responeFlag[0]}")
+            elif responeFlag[1] == 'RA':
+                closedPorts += 1
+        else:
+            if ping_tcp(args.ip, port):
+                table.add_row(f"{port}/TCP", "open", f"to be implemented...")
+            else:
+                closedPorts += 1
     rprint(f"Closed Ports: {closedPorts}\n")
     rprint(table)
     

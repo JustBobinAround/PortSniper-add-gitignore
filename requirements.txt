@@ -3,3 +3,4 @@ mdurl==0.1.2
 Pygments==2.16.1
 rich==13.6.0
 scapy==2.5.0
+noroot_ping==0.1.1
